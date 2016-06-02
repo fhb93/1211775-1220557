@@ -19,8 +19,6 @@ public class PinList {
 	
 	public final ArrayList<Pin> pinos =  new ArrayList<>();
 	
-	//void inicializaListaPino(){
-		//amarelos = player 1
 	public PinList() {	
 				pinos.add(0, new Pin(L_BASE/2 - D_PEAO/2, D_PEAO,1,1));
 				pinos.add(1, new Pin(L_BASE/2 - D_PEAO/2, L_BASE - 2*D_PEAO,1,2));

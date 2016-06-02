@@ -1,6 +1,6 @@
 package gui;
 
-public class Pin {
+public class Pin{
 	
 	private int x;
 	private int y;
@@ -17,7 +17,7 @@ public class Pin {
 		this.player = player;
 		this.id = id;
 	}
-	
+		
 	void setX( int x){
 		this.x = x;
 	}
