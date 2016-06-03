@@ -30,7 +30,7 @@ public class Dado{
 
 	public Dado() {	
 		label = new JLabel();
-		button = new JButton("Lançar Dado!");
+		button = new JButton("Lanï¿½ar Dado!");
 		button.setLayout(null);
 		button.setSize(150, 75);
 		button.setBounds(770, 20, 150, 75);
@@ -64,8 +64,8 @@ public class Dado{
 	}
 
 
-	public void rollDice() {
-		System.out.println("Dado lançado!");
+	public int rollDice() {
+		System.out.println("Dado lanï¿½ado!");
 		Random rand = new Random();
 		int val = 0;
 		for(int i = 0; i < 10; i++) {
@@ -82,7 +82,7 @@ public class Dado{
 		}
 		setValorDado(val + 1);
 		System.out.println(getValorDado());
-
+		return getValorDado();
 	}
 
 	
@@ -103,22 +103,7 @@ public class Dado{
 		return rolagem;
 	}
 	
-	public void movement(Pin pin, int player) {
-		button.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent event) {
-				super.mouseClicked(event);
-				handleMouseClick(event);
-			}
-			public void handleMouseClick(MouseEvent event) {
-				rollDice();	
-				// isso aqui tb nao funfa, lek
-				pin.setX(valorDado * 3);
-				pin.setY(valorDado * 2);
-			}
-		});
-		
-	}
+	
 	
 
 }

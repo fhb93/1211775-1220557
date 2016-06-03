@@ -2,10 +2,10 @@ package gui;
 
 public class Casa {
 	private static int qtdPin;
-	private double x;
-	private double y;
+	private int x;
+	private int y;
 	
-	public Casa(double x, double y) {
+	public Casa(int x, int y) {
 		setQtdPin(0);
 		setX(x);
 		setY(y);
@@ -17,16 +17,16 @@ public class Casa {
 	public static void setQtdPin(int qtdPin) {
 		Casa.qtdPin = qtdPin;
 	}
-	public double getX() {
+	public int getX() {
 		return x;
 	}
-	public void setX(double x) {
+	public void setX(int x) {
 		this.x = x;
 	}
-	public double getY() {
+	public int getY() {
 		return y;
 	}
-	public void setY(double y) {
+	public void setY(int y) {
 		this.y = y;
 	}
 }

@@ -1,25 +1,31 @@
 package gui;
 
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class Ludo extends JComponent {
-	// final static int L_TAB = 762;
-	// final static int L_BASE = 306;
-	// final static int L_CASA = (L_TAB - (2*L_BASE)) / 3;
-	// final static int D_PEAO = 40;
+public class Ludo {
 
-	// public enum Color {
-	// RED,
-	// BLUE,
-	// GREEN,
-	// YELLOW;
-	// }
+	public static int valorDado;
+	
 	public static PinList pins = new PinList();
+	public static ListCasas casa = new ListCasas();
+	public static ListCasas amarela = new ListCasas(1);
+	public static ListCasas azul = new ListCasas(2);
+	public static ListCasas vermelha = new ListCasas(3);
+	public static ListCasas verde  = new ListCasas(4);
+
+	
 	public static ArrayList<Pin> pinos = pins.getList();		
+	public static ArrayList<Casa> casas = casa.getListCasa();
+	public static ArrayList <Casa> amarelas = amarela.getListColoridas();
+	public static ArrayList <Casa> azuis = azul.getListColoridas();
+	public static ArrayList <Casa> vermelhas = vermelha.getListColoridas();
+	public static ArrayList <Casa> verdes = verde.getListColoridas();		
 
 	public static void main(String[] args) {
 		final int frameWidth = 1024;
@@ -29,8 +35,6 @@ public class Ludo extends JComponent {
 		JFrame myFrame = new JFrame("Ludo");
 		Panel panel = new Panel();
 		Dado d = new Dado();
-
-		
 		// inicializa frame e painel
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.setSize(frameWidth, frameHeight);
@@ -42,15 +46,27 @@ public class Ludo extends JComponent {
 		panel.add(d.getButton());
 		myFrame.add(panel);
 		myFrame.setVisible(true);
-		//d.movement(pinos.getList().get(2), 1);
 		
+		movement(d, d.getButton(), pins.getList().get(2), 1);
+		System.out.println("valor =" + valorDado);
 		
+	}
+	
+	public static void movement(Dado d, JButton button, Pin pin, int player) {
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event) {
+				super.mouseClicked(event);
+				handleMouseClick(event);
+			}
+			public void handleMouseClick(MouseEvent event) {
+				valorDado = d.rollDice();	
+				// isso aqui tb nao funfa, lek
+				pin.setX(valorDado * 3);
+				pin.setY(valorDado * 2);
+				
+			}
+		});
 		
-		// isso aqui nao ta funfando, lek
-		//panel.repaint();
-		//myFrame.add(panel);
-		//myFrame.setVisible(true);
-		
-
 	}
 }
