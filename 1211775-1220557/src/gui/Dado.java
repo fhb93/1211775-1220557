@@ -1,7 +1,5 @@
 package gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-public class Dado{
+public class Dado {
 	
 	private String path1 = "src/assets/Dice1.png";
 	private String path2 = "src/assets/Dice2.png";
@@ -103,7 +101,4 @@ public class Dado{
 		return rolagem;
 	}
 	
-	
-	
-
 }
