@@ -4,22 +4,26 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 
 public class Pin{
-	public  boolean voltaCompleta = false;
+	public boolean voltaCompleta = false;
 	private int x;
 	private int y;
 	private int player;
 	private int id;
 	private int idCasa;
+	private int casaInicial;
+	private int casaFinal;
+	private int casasAndadas;
 	//	public Pin(){
 	//		
 	//	}
 
-	public Pin(int x, int y, int player, int id){
+	public Pin(int x, int y, int player, int id, int cInicial, int cFinal){
 		this.x = x;
 		this.y = y;
 		this.player = player;
 		this.id = id;
-
+		casaInicial = cInicial;
+		casaFinal = cFinal;
 	}
 
 
@@ -32,9 +36,12 @@ public class Pin{
 			//pin.movePin(1, pins.getList().get(2).getId(), valorDado);
 
 			if(valorDado < 52 && voltaCompleta != true) {
-				Casa casaCorr = casa.getListCasa().get(valorDado);
-				this.setX(casaCorr.getX());
-				this.setY(casaCorr.getY());
+				//Casa casaDestino = casa.getListCasa().get(valorDado);
+				//this.setX(casaDestino.getX());
+				
+				this.setX(Ludo.casas.get(this.getCasaInicial() + valorDado).getX());
+				//this.setY(casaDestino.getY());
+				this.setY(Ludo.casas.get(this.getCasaInicial() + valorDado).getY());
 				System.out.println(valorDado);
 			}
 			else if(valorDado >= 52 && voltaCompleta != true) { // se valorDado for maior e volta foi completa
@@ -44,9 +51,9 @@ public class Pin{
 			else if(valorDado < 52 && voltaCompleta){						
 
 				System.out.println(valorDado);
-				Casa casaCorr = coloridas.getListColoridas().get(valorDado);
-				this.setX(casaCorr.getX());
-				this.setY(casaCorr.getY());
+				Casa casaDestino = coloridas.getListColoridas().get(valorDado);
+				this.setX(casaDestino.getX());
+				this.setY(casaDestino.getY());
 
 			}
 
@@ -56,51 +63,6 @@ public class Pin{
 		}
 
 	}
-
-
-
-
-	/*
-	public void movePin(int valorDado, int idPin, int idCasa){
-
-		int difCasa = Ludo.casas.size() - idCasa;
-		int dado;
-
-		// ESSE CASO NAO FUNFA
-		//caso: pino se encontra em casa branca e vai para a de sua cor
-
-		if(difCasa < valorDado){
-			dado = valorDado - difCasa;
-
-			for(int i = 0; i < Ludo.pinos.size(); i++){
-				if(Ludo.pinos.get(i).getId() == idPin){
-					if(Ludo.pinos.get(i).getPlayer() == 1){
-						Ludo.pinos.get(i).setX(Ludo.amarelas.get(dado).getX());
-						Ludo.pinos.get(i).setY(Ludo.amarelas.get(dado).getY());
-					}
-				}
-			}
-		}
-		else{
-
-			//ESSE CASO FUNFA PERFEITAMENTE
-			//caso mais simples: Pino se encontra em casa branca e vai para casa branca
-
-			for(int i = 0; i < Ludo.pinos.size(); i++){
-				if(Ludo.pinos.get(i).getId() == idPin)
-				{
-					for(int j = 0; j < Ludo.casas.size(); j++){
-						if(Ludo.casas.get(j).getId() == Ludo.pinos.get(i).getIdCasa()){
-							j = j + valorDado;
-							Ludo.pinos.get(i).setX(Ludo.casas.get(j).getX());
-							Ludo.pinos.get(i).setY(Ludo.casas.get(j).getY());
-						}
-					}
-				}
-			}
-
-		}	
-	}*/
 
 
 	void setX( int x){
@@ -140,6 +102,37 @@ public class Pin{
 
 	public int getIdCasa(){
 		return this.idCasa;
+	}
+
+
+	public int getCasaInicial() {
+		return casaInicial;
+	}
+
+
+	public void setCasaInicial(int casaInicial) {
+		this.casaInicial = casaInicial;
+	}
+
+
+	public int getCasaFinal() {
+		return casaFinal;
+	}
+
+
+	public void setCasaFinal(int casaFinal) {
+		this.casaFinal = casaFinal;
+	}
+
+
+	public void setValorDado(int rollDice) {
+		this.casasAndadas += rollDice;
+		
+	}
+
+
+	public int getValorDado() {
+		return this.casasAndadas;
 	}
 
 
