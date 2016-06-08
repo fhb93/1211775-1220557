@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class Pin{
 	public boolean voltaCompleta = false;
@@ -13,21 +14,17 @@ public class Pin{
 	private int casaInicial;
 	private int casaFinal;
 	private int casasAndadas;
-	//	public Pin(){
-	//		
-	//	}
 
 	public Pin(int x, int y, int player, int id, int cInicial, int cFinal){
 		this.x = x;
 		this.y = y;
 		this.player = player;
 		this.id = id;
-		casaInicial = cInicial;
-		casaFinal = cFinal;
+		this.casaInicial = cInicial;
+		this.casaFinal = cFinal;
 	}
 
-
-	public void handleSelectedPin(MouseEvent event, int valorDado, ListCasas casa, ListCasas coloridas) {
+	public void handleSelectedPin(MouseEvent event, int valorDado, int valorAgregado, ArrayList<Casa> casas, ArrayList<Casa> coloridas) {
 		System.out.println(event.getX() + " "+ event.getY());
 		Rectangle bounds = new Rectangle(this.getX(), this.getY(), 40, 40);
 		//				Rectangle bounds = new Rectangle(0, 0, 40, 40);
@@ -35,23 +32,23 @@ public class Pin{
 			System.out.println("Clique no retangulo!");
 			//pin.movePin(1, pins.getList().get(2).getId(), valorDado);
 
-			if(valorDado < 52 && voltaCompleta != true) {
+			if(valorAgregado < 52 && voltaCompleta != true) {
 				//Casa casaDestino = casa.getListCasa().get(valorDado);
 				//this.setX(casaDestino.getX());
+				this.setX(casas.get(this.getCasaInicial() + valorDado).getX());
+				this.setY(casas.get(this.getCasaInicial() + valorDado).getY());
+				this.casaInicial += valorDado;
 				
-				this.setX(Ludo.casas.get(this.getCasaInicial() + valorDado).getX());
-				//this.setY(casaDestino.getY());
-				this.setY(Ludo.casas.get(this.getCasaInicial() + valorDado).getY());
 				System.out.println(valorDado);
 			}
-			else if(valorDado >= 52 && voltaCompleta != true) { // se valorDado for maior e volta foi completa
+			else if(valorAgregado >= 52 && voltaCompleta != true) { // se valorDado for maior e volta foi completa
 				voltaCompleta = true; //definir uma volta completa
-				valorDado -= 52;	//ao somatorio do valor do dado é subtraido o numero de casas brancas
+				valorAgregado -= 52;	//ao somatorio do valor do dado Ã© subtraido o numero de casas brancas
 			}
-			else if(valorDado < 52 && voltaCompleta){						
+			else if(valorAgregado < 52 && voltaCompleta){						
 
 				System.out.println(valorDado);
-				Casa casaDestino = coloridas.getListColoridas().get(valorDado);
+				Casa casaDestino = coloridas.get(valorDado);
 				this.setX(casaDestino.getX());
 				this.setY(casaDestino.getY());
 
@@ -61,8 +58,9 @@ public class Pin{
 		else {
 			System.out.println("fora do retangulo");
 		}
-
+		Ludo.diceClicked = false;
 	}
+	
 
 
 	void setX( int x){
@@ -116,7 +114,7 @@ public class Pin{
 
 
 	public int getCasaFinal() {
-		return casaFinal;
+		return this.casaFinal;
 	}
 
 
@@ -125,13 +123,13 @@ public class Pin{
 	}
 
 
-	public void setValorDado(int rollDice) {
-		this.casasAndadas += rollDice;
-		
+	public void setCasasAndadas(int value) {
+		this.casasAndadas += value;
+
 	}
 
 
-	public int getValorDado() {
+	public int getCasasAndadas() {
 		return this.casasAndadas;
 	}
 

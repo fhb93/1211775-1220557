@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 public class Ludo  {
 
-	public static int valorDado;
 	public static boolean turn = false;
 	public static PinList pins = new PinList();
 	public static ListCasas casa = new ListCasas();
@@ -29,6 +28,7 @@ public class Ludo  {
 	public static ArrayList <Casa> vermelhas = vermelha.getListColoridas();
 	public static boolean voltaCompleta = false;
 	public static boolean played = false;
+	public static boolean diceClicked = false;
 
 
 
@@ -68,27 +68,27 @@ public class Ludo  {
 		//		}
 		while(true) {
 			if(turn) {
-				
 				turn = false;
 
-				if(player == 1 && !played)  {//amarelo 
-					movements(d, d.getButton(), panel, pins.getList().get(0));
+				if(player == 1 && !played) { //amarelo 
+					movements(d, d.getButton(), panel, pins.getList().get(0), player);
 				}
 				if(player == 2 && !played)	 //azul 
-					movements(d, d.getButton(),panel, pins.getList().get(4));
+					movements(d, d.getButton(), panel, pins.getList().get(4), player);
 				if(player == 3 && !played) 
-					movements(d, d.getButton(), panel, pins.getList().get(8));
+					movements(d, d.getButton(), panel, pins.getList().get(8), player);
 				if(player == 4 && !played)
-					movements(d, d.getButton(), panel, pins.getList().get(12));
+					movements(d, d.getButton(), panel, pins.getList().get(12), player);
 				player++;
-				//d.getButton().setEnabled(false);
+				played = true;
+//				d.getButton().setEnabled(false);
+//				panel.add(d.getButton());
+//				myFrame.add(panel);
+				
 				if(player == 5)
 					player = 1;
 				
 			}
-
-
-
 
 			try {
 				Thread.sleep(500);
@@ -98,23 +98,11 @@ public class Ludo  {
 				e.printStackTrace();
 			}
 			played = false;
+			panel.repaint();
 		}
 	}
-	//i++;
-	//} 
-	//movements(d, d.getButton(), panel, pins.getList().get(4), 2);
-	//System.out.println("valor = " + valorDado);
-	//if(turn < 4)
 
-	//else if(turn == 4)
-	//turn = 1;
-
-
-
-	//movements(d, d.getButton(), panel, pins.getList().get(8), turn);
-
-
-	public static void movements(Dado d, JButton button, JPanel panel, Pin pin) {
+	public static void movements(Dado d, JButton button, JPanel panel, Pin pin, int player) {
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
@@ -122,18 +110,33 @@ public class Ludo  {
 				handleMouseClick(event);
 			}
 			public void handleMouseClick(MouseEvent event) {
-
-				pin.setValorDado(d.rollDice());	
-
+				if(diceClicked == false){
+					d.setValorDado(d.rollDice());						
+					diceClicked = true;
+				}
 			}
 		});
-
+		
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				super.mouseClicked(event);
-				pin.handleSelectedPin(event, pin.getValorDado(), casa, amarela);
-				played = true;
+				if(!played) {
+					if(player == 1){
+						pin.handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pin.getCasasAndadas(), casas, amarelas); //pin.getValorDado
+					}
+					else if(player == 2){
+						pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, azuis);
+					}
+					else if(player == 3){
+						pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, verdes);
+					}
+					else if(player == 4){
+						pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, vermelhas);
+					}
+				//played = true;
+				}				
+				//pin.setCasasAndadas(d.getValorDado() + pin.getCasasAndadas());
 				panel.repaint();
 			}
 		});
