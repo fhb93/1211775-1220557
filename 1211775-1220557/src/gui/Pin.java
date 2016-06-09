@@ -1,10 +1,20 @@
 package gui;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Pin{
+	final int L_TAB = 715;
+	final int L_BASE = 285;
+	final int L_CASA = (L_TAB - (2*L_BASE)) / 3;
+	final int L_CENTRO = L_CASA * 3;
+	final int D_PEAO = 40;
+
+	
+	
+	
 	public boolean voltaCompleta = false;
 	private int x;
 	private int y;
@@ -13,7 +23,10 @@ public class Pin{
 	private int idCasa;
 	private int casaInicial;
 	private int casaFinal;
-	private int casasAndadas;
+	private int casasAndadas = 0;
+	//	public Pin(){
+	//		
+	//	}
 
 	public Pin(int x, int y, int player, int id, int cInicial, int cFinal){
 		this.x = x;
@@ -24,7 +37,12 @@ public class Pin{
 		this.casaFinal = cFinal;
 	}
 
-	public void handleSelectedPin(MouseEvent event, int valorDado, int valorAgregado, ArrayList<Casa> casas, ArrayList<Casa> coloridas) {
+	public boolean pinSelected(Point p) {
+		Rectangle bounds = new Rectangle(this.getX(), this.getY(), 40, 40);
+		return bounds.contains(p);
+	}
+	
+	public void handleSelectedPin(MouseEvent event, int valorDado, int valorAgregado, ArrayList<Casa> casas, ArrayList<Casa> coloridas, int player) {
 		System.out.println(event.getX() + " "+ event.getY());
 		Rectangle bounds = new Rectangle(this.getX(), this.getY(), 40, 40);
 		//				Rectangle bounds = new Rectangle(0, 0, 40, 40);
@@ -32,35 +50,81 @@ public class Pin{
 			System.out.println("Clique no retangulo!");
 			//pin.movePin(1, pins.getList().get(2).getId(), valorDado);
 
-			if(valorAgregado < 52 && voltaCompleta != true) {
-				//Casa casaDestino = casa.getListCasa().get(valorDado);
-				//this.setX(casaDestino.getX());
-				this.setX(casas.get(this.getCasaInicial() + valorDado).getX());
-				this.setY(casas.get(this.getCasaInicial() + valorDado).getY());
-				this.casaInicial += valorDado;
+			if(valorAgregado < 52 && !this.voltaCompleta) {
+
+				if(player > 1 && this.idCasa + valorDado > 52){
+					int newindex = (this.idCasa + valorDado) - 52;
+					this.setX(casas.get(newindex - 1).getX());
+					this.setY(casas.get(newindex - 1).getY());
+					this.setIdCasa(casas.get(newindex - 1).getId());
+					valorAgregado += valorDado;
+					this.setCasasAndadas(this.getCasasAndadas() + valorDado);
+					this.setCasaInicial(newindex - 1);
+				}
+				else{
+
+					//efetua o movimento
+					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
+					this.setX(casas.get(this.getCasaInicial() + valorDado).getX());
+					this.setY(casas.get(this.getCasaInicial() + valorDado).getY());
+
+					//nova casa inicial ap�s movimento
+					this.casaInicial += valorDado;
+					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() + 1);
+					this.setIdCasa(casas.get(casaInicial).getId());
+					this.setCasasAndadas(this.getCasasAndadas() + valorDado);
+					System.out.println(valorDado);
+					
+				}
+			}
+			
+			//reconhece volta completa e passa o pino para o caminho de sua cor
+			else if(valorAgregado >= 52 && this.voltaCompleta != true) { // se valorDado for maior e volta foi completa
+				this.voltaCompleta = true; //definir uma volta completa
 				
-				System.out.println(valorDado);
+				//if(this.getIdCasa() + valorDado > this.getCasaFinal()){
+					int newindex = (this.casaInicial + valorDado) - this.casaFinal;
+					this.setX(coloridas.get(newindex).getX());
+					this.setY(coloridas.get(newindex).getY());
+					this.setCasaInicial(newindex);
+					this.setCasasAndadas(this.getCasasAndadas() + valorDado);
+				//}
+				
 			}
-			else if(valorAgregado >= 52 && voltaCompleta != true) { // se valorDado for maior e volta foi completa
-				voltaCompleta = true; //definir uma volta completa
-				valorAgregado -= 52;	//ao somatorio do valor do dado Ã© subtraido o numero de casas brancas
-			}
-			else if(valorAgregado < 52 && voltaCompleta){						
-
-				System.out.println(valorDado);
-				Casa casaDestino = coloridas.get(valorDado);
-				this.setX(casaDestino.getX());
-				this.setY(casaDestino.getY());
-
-			}
-
+			
+			else if(valorAgregado > 52 && this.voltaCompleta == true){
+					if(this.casaInicial + valorDado > coloridas.size() - 1){
+						if(player == 1){
+							this.setX(L_BASE);
+							this.setY(L_BASE + L_CASA);
+						}
+						else if(player == 2){
+							this.setX(L_BASE + L_CASA);
+							this.setY(L_BASE);
+						}
+						else if(player == 3){
+							this.setX(L_BASE + 2*L_CASA);
+							this.setY(L_BASE + L_CASA);
+						}
+						else if(player == 4){
+							this.setX(L_BASE + L_CASA);
+							this.setY(L_BASE + 2*L_CASA);
+						}
+					}
+					else{
+						this.setX(coloridas.get(this.casaInicial + valorDado).getX());
+						this.setY(coloridas.get(this.casaInicial + valorDado).getY());
+						this.setCasaInicial(this.casaInicial + valorDado);
+						this.setCasasAndadas(this.casasAndadas+ valorDado);
+					}
+				}
 		}
 		else {
 			System.out.println("fora do retangulo");
 		}
 		Ludo.diceClicked = false;
 	}
-	
+
 
 
 	void setX( int x){
@@ -124,7 +188,7 @@ public class Pin{
 
 
 	public void setCasasAndadas(int value) {
-		this.casasAndadas += value;
+		this.casasAndadas = value;
 
 	}
 

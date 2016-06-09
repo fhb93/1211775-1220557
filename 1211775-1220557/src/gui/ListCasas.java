@@ -112,6 +112,10 @@ public class ListCasas {
 		System.out.println(id == QUANT_CASAS - 6);
 		System.out.println(id);
 		
+		casas.get(0).setQtdPin(1);
+		casas.get(14).setQtdPin(1);
+		casas.get(27).setQtdPin(1);
+		casas.get(40).setQtdPin(1);
 	}
 	
 	public ListCasas(int cor){
@@ -144,7 +148,7 @@ public class ListCasas {
 			x -= L_CASA;
 			
 			for(; y < L_BASE; y += L_CASA){
-				casas.add(new Casa(x , y, id));
+				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
 		}
@@ -160,7 +164,7 @@ public class ListCasas {
 			x += L_CASA;
 			
 			for(; y > L_TAB - L_BASE; y -= L_CASA){
-				casas.add(new Casa(x , y, id));
+				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
 		}
@@ -176,7 +180,7 @@ public class ListCasas {
 			y -= L_CASA;
 			
 			for(; x > L_TAB - L_BASE; x -= L_CASA){
-				casas.add(new Casa(x , y, id));
+				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
 		}

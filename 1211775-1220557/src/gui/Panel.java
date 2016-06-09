@@ -8,7 +8,12 @@ import javax.swing.JPanel;
 
 public class Panel extends JPanel {
 	private static final long serialVersionUID = 1L;
-	//private static int flag = 0;
+	final int L_TAB = 715;
+	final int L_BASE = 285;
+	final int L_CASA = (L_TAB - (2*L_BASE)) / 3;
+	final int L_CENTRO = L_CASA * 3;
+	final int D_PEAO = 40;
+
 
 	@Override
 	public void paintComponent(Graphics g)
@@ -16,14 +21,16 @@ public class Panel extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		super.paintComponent(g);
 		Tabuleiro tabuleiro = new Tabuleiro();
-		
+		int x = 0;
+		int y = 0;
+
 		tabuleiro.paintTabuleiro(g);
-		
+
 		for(int i = 0; i < 16; i++)
 		{
 			g2d.setColor(Color.BLACK);
 			g2d.setStroke(new BasicStroke(3));
-			
+
 			g2d.drawOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 		}
 		for(int i = 0; i < 16; i++) 
@@ -45,7 +52,35 @@ public class Panel extends JPanel {
 				g2d.fillOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 			}
 		}
-		
+
+		//verifica se há casa com dois pinos da mesma cor e desenha um quadrado de sua cor se houver
+		for(int i = 0; i < Ludo.casas.size(); i++){
+			if(Ludo.casas.get(i).getQtdPin() == 2){
+				x = Ludo.casas.get(i).getX();
+				y = Ludo.casas.get(i).getY();
+				for(int j = 0; j < Ludo.pinos.size(); j++){
+					if(Ludo.pinos.get(j).getX() == Ludo.casas.get(i).getX() && Ludo.pinos.get(j).getY() == Ludo.casas.get(i).getY()){
+						if(Ludo.pinos.get(j).getPlayer() == 1){
+							g2d.setColor(Color.YELLOW);
+						}
+						else if(Ludo.pinos.get(j).getPlayer() == 2){
+							g2d.setColor(Color.BLUE);
+						}
+						else if(Ludo.pinos.get(j).getPlayer() == 3){
+							g2d.setColor(new Color(0, 153, 0));
+						}
+						else{
+							g2d.setColor(Color.RED);
+						}
+						g2d.drawRect(x, y, L_CASA/2, L_CASA/2);
+					}
+				}
+			}
+		}
+
+
 	}
 
 }
+
+
