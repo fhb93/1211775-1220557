@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Ludo  {
@@ -44,6 +45,10 @@ public class Ludo  {
 		JFrame myFrame = new JFrame("Ludo");
 		Panel panel = new Panel();
 		Dado d = new Dado();
+		JLabel board = new JLabel();
+		board.setBounds(770, 450, 150, 75);
+		board.setText("Jogador: ");
+		board.setVisible(true);
 		playerTurnHasFinished = new boolean[4];
 		// inicializa frame e painel
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,6 +62,7 @@ public class Ludo  {
 		panel.add(d.getLabel());
 		panel.add(d.getButton());
 		panel.add(buttonTurn);
+		panel.add(board);
 		myFrame.add(panel);
 		myFrame.setVisible(true);
 
@@ -71,29 +77,47 @@ public class Ludo  {
 			playerTurnHasFinished[i] = false;
 		
 		while(true) {
+			
 			if(turn) {
 				
 				turn = false;
 
-				if(player == 1 && !played && !playerTurnHasFinished[player - 1]) //amarelo 
-					movements(d, d.getButton(), panel, player); //testando
+				if(player == 1 &&  !playerTurnHasFinished[player - 1]) //amarelo  
+					movements(d, d.getButton(), panel, player); 
 					//movements(d, d.getButton(), panel, pins.getList().get(0), player);
-				if(player == 2 && !played && !playerTurnHasFinished[player - 1])	 //azul 
+				if(player == 2 && !playerTurnHasFinished[player - 1])	 //azul 
 					movements(d, d.getButton(), panel, player);
 					//movements(d, d.getButton(), panel, pins.getList().get(4), player);
-				if(player == 3 && !played && !playerTurnHasFinished[player - 1]) //vermelhas
+				if(player == 3 &&  !playerTurnHasFinished[player - 1]) //vermelhas
 					movements(d, d.getButton(), panel, player);
 				//	movements(d, d.getButton(), panel, pins.getList().get(12), player);
-				if(player == 4 && !played && !playerTurnHasFinished[player - 1]) //verdes
+				if(player == 4 && !playerTurnHasFinished[player - 1]) //verdes
 					movements(d, d.getButton(), panel, player);
 				//	movements(d, d.getButton(), panel, pins.getList().get(8), player);
+				switch(player) {
+				case 1:
+					board.setText("Jogador: Amarelas");
+					break;
+				case 2:
+					board.setText("Jogador: Azuis");
+					break;
+				case 3:
+					board.setText("Jogador: Vermelhas");
+					break;
+				case 4:
+					board.setText("Jogador: Verdes");
+					break;
+				}
+				
+				
 				player++;
-				played = true;
 				
 				if(player == 5)
 					player = 1;
 				for(int i = 0; i < 4; i++)
 					playerTurnHasFinished[i] = false; //reseta os jogadas da rodada ao seu término
+			
+				
 			}
 
 			try {
@@ -103,7 +127,6 @@ public class Ludo  {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			played = false;
 			panel.repaint();
 			
 		}
@@ -146,25 +169,29 @@ public class Ludo  {
 					else if(player == 2){
 					//	pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, azuis, player);
 						for(int i = 4; i < 8; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint()))
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+							if(pins.getList().get(i).pinSelected(event.getPoint()))// tava amarelas em vez de azuis
+								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, azuis, player); //pin.getValorDado
 						}
 					}
 					else if(player == 3){
 						//pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, vermelhas, player);
 						for(int i = 12; i < 16; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint()))
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+							if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarela em vez de vermelhas
+								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, vermelhas, player); //pin.getValorDado
 						}
 					}
 					else if(player == 4){
 					//	pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, verdes, player);
 						for(int i = 8; i < 11; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint()))
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+							if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarelas em vez de verdes
+								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, verdes, player); //pin.getValorDado
 						}
 					}
-					playerTurnHasFinished[player - 1] = true;
+					
+					if(!Pin.captured) 
+						playerTurnHasFinished[player - 1] = true;
+					else 
+						d.setValorDado(20);
 				}				
 				panel.repaint();
 			}
@@ -185,16 +212,16 @@ public class Ludo  {
 				switch(cor) {
 
 				case 1:
-					jogador = "Conclui amarela";
+					jogador = "Conclui Amarelas";
 					break;
 				case 2:
-					jogador = "Conclui azul";
+					jogador = "Conclui Azuis";
 					break;
 				case 3:
-					jogador = "Conclui vermelha";
+					jogador = "Conclui Vermelhas";
 					break;
 				case 4:
-					jogador = "Conclui verde";
+					jogador = "Conclui Verdes";
 					break;
 				}
 				buttonTurn.setText(jogador);

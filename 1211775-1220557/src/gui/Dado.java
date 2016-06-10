@@ -97,7 +97,6 @@ public class Dado {
 
 			try {
 				val = rand.nextInt(6);
-				
 				val = rand.nextInt(6);
 //				img = ImageIO.read(new FileInputStream(file[val]));
 //				label.setIcon(new ImageIcon(img));

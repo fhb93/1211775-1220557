@@ -39,6 +39,7 @@ public class ListCasas {
 		casas.add(new Casa(x , y, id));
 		id++;
 		
+		
 		for(; y < L_BASE ; y += L_CASA){
 			casas.add(new Casa(x , y, id));
 			id++;
