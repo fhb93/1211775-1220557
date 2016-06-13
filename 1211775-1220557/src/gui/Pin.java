@@ -26,19 +26,19 @@ public class Pin{
 	private int casasAndadas = 0;
 	private int cor;
 	public static boolean captured = false;
-	//	public Pin(){
-	//		
-	//	}
+	public boolean isOnPath;
 
-	public Pin(int x, int y, int player, int id, int cInicial, int cFinal, int cor){
+
+	public Pin(int x, int y, int player, int id, int cInicial, int cFinal, int cor, boolean onPath){
 		this.x = x;
 		this.y = y;
 		this.player = player;
 		this.id = id;
 		this.casaInicial = cInicial;
 		this.casaFinal = cFinal;
-		//MUDANDO A PARTIR DAQUI
 		this.setCor(cor);
+		isOnPath = onPath;
+		
 	}
 
 	public boolean pinSelected(Point p) {
@@ -48,148 +48,161 @@ public class Pin{
 
 
 
-	public boolean testPinMovability(int valorDado, int casaInicial, ArrayList<Casa> casas, PinList pins) {
-	
-		for(int i = 0; i < pins.getList().size(); i++) {
-			if(pins.getList().get(i).getIdCasa() == casaInicial + valorDado && pins.getList().get(i).getCor() != this.cor) {
-				System.out.println("impossivel mover");
-				return false;
+	public boolean testPinMovability(int valorDado, int casaInicial, ArrayList<Casa> casas, PinList pins, Pin selectedPin) {
+			int valorDadoDepois;
+
+			
+			if(valorDado + casaInicial > 52){
+				valorDadoDepois = (valorDado + casaInicial) - 52;
+				//verifica se ha pino de outra cor na casa destino
+				for(int i = 0; i < 16; i++){
+					if(casas.get(valorDadoDepois - 1).getId() == pins.getList().get(i).getIdCasa() && pins.getList().get(i).getCor() != selectedPin.cor){
+						System.out.println("Impossivel mover");
+						return false;
+					}
+				}
+				
+				//verifica se ha barreira na casa de destino, independente da cor
+				if(casas.get(valorDadoDepois - 1).getQtdPin() == 2){
+					System.out.println("nao move");
+					return false;
+				}
+				
+				//verifica se ha barreira de cor diferente antes da virada da lista
+				for(int i = casaInicial + 1 ; i < 51; i++){
+					if(casas.get(i).getQtdPin() == 2) {
+						for(int j = 0; j < 16; j++) {
+							if(pins.getList().get(j).getIdCasa() == casas.get(i).getId()) {
+								if(pins.getList().get(j).getCor() != selectedPin.cor) {
+									System.out.println("barreira cor diferente");
+									return false;
+								}
+							}
+							
+						}
+					}
+				}
+				
+				//verifica se ha barreira de cor diferente apos a virada da lista
+				for(int i = 0; i < valorDadoDepois - 1; i++){
+					if(casas.get(i).getQtdPin() == 2) {
+						for(int j = 0; j < 16; j++) {
+							if(pins.getList().get(j).getIdCasa() == casas.get(i).getId()) {
+								if(pins.getList().get(j).getCor() != selectedPin.cor) {
+									System.out.println("barreira cor diferente");
+									return false;
+								}
+							}
+						}
+					}
+				}
 			}
-		}
-		
-		if(casas.get(valorDado + casaInicial).getQtdPin() == 2) {
-			System.out.println("nao move");
-			return false;
-		}
-		
-		for(int i = casaInicial + 1; i < casaInicial + valorDado - 1; i++) {
-			if(casas.get(i).getQtdPin() == 2) {
-				for(int j = 0; j < 16; j++) {
-					if(pins.getList().get(j).getIdCasa() == casas.get(i).getId()) {
-						if(pins.getList().get(j).getCor() != this.cor) {
-							System.out.println("barreira cor diferente");
-							return false;
+			else{			
+				for(int i = 0; i < pins.getList().size(); i++) {
+					if(pins.getList().get(i).getIdCasa() == casaInicial + valorDado && pins.getList().get(i).getCor() != selectedPin.cor) {
+						System.out.println("impossivel mover");
+						return false;
+					}
+				}
+				if(casas.get(valorDado + casaInicial).getQtdPin() == 2) {
+					System.out.println("nao move");
+					return false;
+				}
+				for(int i = casaInicial + 1; i < casaInicial + valorDado - 1; i++) {
+					if(casas.get(i).getQtdPin() == 2) {
+						for(int j = 0; j < 16; j++) {
+							if(pins.getList().get(j).getIdCasa() == casas.get(i).getId()) {
+								if(pins.getList().get(j).getCor() != selectedPin.cor) {
+									System.out.println("barreira cor diferente");
+									return false;
+								}
+							}
+							
 						}
 					}
 					
 				}
 			}
+			captured = capturePin(casas, valorDado, casaInicial, selectedPin);
 			
-		}
-		captured = capturePin(casas, valorDado, casaInicial);
-		
-		return true;
-		
-		/*	int casaInicialTemp = casaInicial;
-
-
-		if(valorDado + casaInicial >= casas.size())
-		{
-			valorDado = (casaInicial + valorDado) - casas.size();
-		}
-		else {
-
-			//verifica se o pino vai exatamente para uma barreira, independente da cor
-			if(casas.get(valorDado + casaInicial).getQtdPin() == 2) {
-
-				return false;
-			}
-
-
-			//verifica se ha uma barreira de 2 pinos, entre a casa inicial e a destino e impede o movimento
-			for(int i = casaInicialTemp + 1; i < valorDado + casaInicialTemp + 1; i++) {
-
-				//			if(casaInicial + valorDado > casas.size()) {
-				//				casaInicialTemp = casas.get(0).getId();
-				//			}
-				if(casas.get(i).getQtdPin() == 2) {
-					for(int j = 0; j < 16; j++) {
-						if(pins.getList().get(j).getId() == i )
-							if(pins.getList().get(j).getCor() != this.cor)
-								return false;
-					}
-				}
-			}
-
-			// checa se ha um pino em alguma casa entre a casa corrente e a destino
-			if(casas.get(valorDado + casaInicial).getQtdPin() == 0) {
-				for(int i = casaInicial + 1; i < valorDado + casaInicial; i++) {
-					if(casas.get(i).getQtdPin() != 0) {
-						for(int j = 0; j < 16; j++) {
-							if(pins.getList().get(j).getIdCasa() == casas.get(i).getId()) {
-								if(pins.getList().get(j).getCor() != this.cor) {
-									captured = capturePin(casas, valorDado, casaInicial);
-									if(captured)
-										System.out.println("capturou");
-									return true;
-								}
-							}
-						}
-						//return true;
-					}
-				}
-			}
-
-
-			// checa se ha um pino de cor diferente na casa dstino
-			if(casas.get(valorDado + casaInicial).getQtdPin() == 1 ) {
-				for(int i = 0; i < 16; i++) {
-					if(pins.getList().get(i).getIdCasa() == this.casaInicial + valorDado  ) {
-						if(pins.getList().get(i).player != this.player) {
-							System.out.println("Impossivel mover nesse caso!");
-							return false;
-						}
-					}
-				}
-			}
-		}
-		return true;
-		*/
+			return true;
 	}
+		
 
 	public void handleSelectedPin(MouseEvent event, int valorDado, int valorAgregado, ArrayList<Casa> casas, ArrayList<Casa> coloridas, int player) {
 		System.out.println(event.getX() + " "+ event.getY());
 		Rectangle bounds = new Rectangle(this.getX(), this.getY(), 40, 40);
-		//				Rectangle bounds = new Rectangle(0, 0, 40, 40);
+		Pin selectedPin = this;
+		
 		if(bounds.contains(event.getX(), event.getY(), 1, 1)) {
 			System.out.println("Clique no retangulo!");
-			//pin.movePin(1, pins.getList().get(2).getId(), valorDado);
+		
+			if(casas.get(casaInicial).getQtdPin() == 2){
+				for(int i = 0; i < 16; i++){
+					if(Ludo.pinos.get(i).getCasaInicial() == casas.get(casaInicial).getId()){
+						selectedPin = Ludo.pinos.get(i);
+					}
+				}
+			}
+			
+			if(valorDado == 5 && !selectedPin.isOnPath) {
+				if(player == 1) {
+					selectedPin.setX(casas.get(0).getX());
+					selectedPin.setY(casas.get(0).getY());
+					casas.get(0).setQtdPin(casas.get(0).getQtdPin() + 1);
+					selectedPin.isOnPath = true;
+					selectedPin.setCasaInicial(0);
+				}
+				if(player == 2) {
+					selectedPin.setX(casas.get(14).getX());
+					selectedPin.setY(casas.get(14).getY());
+					casas.get(14).setQtdPin(casas.get(14).getQtdPin() + 1);
+					selectedPin.isOnPath = true;
+					selectedPin.setCasaInicial(14);
+				}
+				if(player == 3) {
+					selectedPin.setX(casas.get(27).getX());
+					selectedPin.setY(casas.get(27).getY());
+					casas.get(27).setQtdPin(casas.get(27).getQtdPin() + 1);
+					selectedPin.isOnPath = true;
+					selectedPin.setCasaInicial(27);
+				}
+				if(player == 4) {
+					selectedPin.setX(casas.get(40).getX());
+					selectedPin.setY(casas.get(40).getY());
+					casas.get(40).setQtdPin(casas.get(40).getQtdPin() + 1);
+					selectedPin.isOnPath = true;
+					selectedPin.setCasaInicial(40);
+				}
+				return;
+			}
 
-
-			if(valorAgregado < 52 && !this.voltaCompleta && this.testPinMovability(valorDado, this.getCasaInicial(), casas, Ludo.pins)) {
+			if(valorAgregado < 52 && !selectedPin.voltaCompleta && selectedPin.testPinMovability(valorDado, selectedPin.getCasaInicial(), casas, Ludo.pins, selectedPin)) {
 				// da a volta na lista de casas, para nao estourar a lista
-				if(player > 1 && this.idCasa + valorDado > 52){
-					int newindex = (this.idCasa + valorDado) - 52;
-					this.setX(casas.get(newindex - 1).getX());
-					this.setY(casas.get(newindex - 1).getY());
-					this.setIdCasa(casas.get(newindex - 1).getId());
+				if(player > 1 && selectedPin.idCasa + valorDado > 52){
+					int newindex = (selectedPin.idCasa + valorDado) - 52;
+					selectedPin.setX(casas.get(newindex - 1).getX());
+					selectedPin.setY(casas.get(newindex - 1).getY());
+					selectedPin.setIdCasa(casas.get(newindex - 1).getId());
 					valorAgregado += valorDado;
-					this.setCasasAndadas(this.getCasasAndadas() + valorDado);
-					this.setCasaInicial(newindex - 1);
+					selectedPin.setCasasAndadas(selectedPin.getCasasAndadas() + valorDado);
+					selectedPin.setCasaInicial(newindex - 1);
 				}
 				else{
-
-					//efetua o movimento
-
-					//					captured = capturePin(casas, valorDado, player);
-					//					if(captured) {
-					//						boolean inutil = capturePin(casas, valorDado, player);
-					//						System.out.println("capturou!");
-					//					}
 					if(captured) {
 						System.out.println("capturou!");
 					}
 
 
 					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
-					this.setX(casas.get(this.getCasaInicial() + valorDado).getX());
-					this.setY(casas.get(this.getCasaInicial() + valorDado).getY());
+					selectedPin.setX(casas.get(selectedPin.getCasaInicial() + valorDado).getX());
+					selectedPin.setY(casas.get(selectedPin.getCasaInicial() + valorDado).getY());
 
 					//nova casa inicial apos movimento
-					this.casaInicial += valorDado;
-					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() + 1);
-					this.setIdCasa(casas.get(casaInicial).getId());
-					this.setCasasAndadas(this.getCasasAndadas() + valorDado);
+					selectedPin.casaInicial += valorDado;
+					casas.get(selectedPin.casaInicial).setQtdPin(casas.get(selectedPin.casaInicial).getQtdPin() + 1);
+					selectedPin.setIdCasa(casas.get(casaInicial).getId());
+					selectedPin.setCasasAndadas(selectedPin.getCasasAndadas() + valorDado);
 					System.out.println(valorDado);
 
 
@@ -197,43 +210,50 @@ public class Pin{
 			}
 
 			//reconhece volta completa e passa o pino para o caminho de sua cor
-			else if(valorAgregado > 52 && this.voltaCompleta != true) { // se valorDado for maior e volta foi completa
-				this.voltaCompleta = true; //definir uma volta completa
+			else if(valorAgregado > 52 && selectedPin.voltaCompleta != true) { // se valorDado for maior e volta foi completa
+				selectedPin.voltaCompleta = true; //definir uma volta completa
 
-				//if(this.getIdCasa() + valorDado > this.getCasaFinal()){
-				int newindex = (this.casaInicial + valorDado) - this.casaFinal;
-				this.setX(coloridas.get(newindex - 1).getX());
-				this.setY(coloridas.get(newindex - 1).getY());
-				this.setCasaInicial(newindex - 1);
-				this.setCasasAndadas(this.getCasasAndadas() + valorDado);
-				//}
+				casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
+				int newindex = (selectedPin.casaInicial + valorDado) - selectedPin.casaFinal;
+				selectedPin.setX(coloridas.get(newindex - 1).getX());
+				selectedPin.setY(coloridas.get(newindex - 1).getY());
+				selectedPin.setCasaInicial(newindex - 1);
+				casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() + 1);
+				selectedPin.setCasasAndadas(selectedPin.getCasasAndadas() + valorDado);
 
 			}
 
-			else if(valorAgregado > 52 && this.voltaCompleta == true){
-				if(this.casaInicial + valorDado > coloridas.size() - 1){
+			else if(valorAgregado > 52 && selectedPin.voltaCompleta == true){
+				if(selectedPin.casaInicial + valorDado > coloridas.size() - 1){
 					if(player == 1){
-						this.setX(L_BASE);
-						this.setY(L_BASE + L_CASA);
+						selectedPin.setX(L_BASE);
+						selectedPin.setY(L_BASE + L_CASA);
+						casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
+						
 					}
 					else if(player == 2){
-						this.setX(L_BASE + L_CASA);
-						this.setY(L_BASE);
+						selectedPin.setX(L_BASE + L_CASA);
+						selectedPin.setY(L_BASE);
+						casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
 					}
 					else if(player == 3){
-						this.setX(L_BASE + 2*L_CASA);
-						this.setY(L_BASE + L_CASA);
+						selectedPin.setX(L_BASE + 2*L_CASA);
+						selectedPin.setY(L_BASE + L_CASA);
+						casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
 					}
 					else if(player == 4){
-						this.setX(L_BASE + L_CASA);
-						this.setY(L_BASE + 2*L_CASA);
+						selectedPin.setX(L_BASE + L_CASA);
+						selectedPin.setY(L_BASE + 2*L_CASA);
+						casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
 					}
 				}
 				else{
-					this.setX(coloridas.get(this.casaInicial + valorDado).getX());
-					this.setY(coloridas.get(this.casaInicial + valorDado).getY());
-					this.setCasaInicial(this.casaInicial + valorDado);
-					this.setCasasAndadas(this.casasAndadas+ valorDado);
+					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() - 1);
+					selectedPin.setX(coloridas.get(selectedPin.casaInicial + valorDado).getX());
+					selectedPin.setY(coloridas.get(selectedPin.casaInicial + valorDado).getY());
+					selectedPin.setCasaInicial(selectedPin.casaInicial + valorDado);
+					casas.get(casaInicial).setQtdPin(casas.get(casaInicial).getQtdPin() + 1);
+					selectedPin.setCasasAndadas(selectedPin.casasAndadas+ valorDado);
 				}
 			}
 		}
@@ -244,35 +264,164 @@ public class Pin{
 	}
 
 
-	public boolean capturePin(ArrayList<Casa> casas, int valorDado, int casaInicial) {
-		
-		for(int i = casaInicial + 1; i < valorDado + casaInicial - 1; i++) {
-			for(int j = 0; j < 16; j++) {
-				if(casas.get(i).getId() == Ludo.pins.getList().get(j).getCasaInicial()) {
-					if(Ludo.pins.getList().get(j).getPlayer() != this.player) {
-						if(Ludo.pins.getList().get(j).getPlayer() == 1) {
-							Ludo.pins.getList().get(j).setX(L_CASA);
-							Ludo.pins.getList().get(j).setY(L_BASE);
+	public boolean capturePin(ArrayList<Casa> casas, int valorDado, int casaInicial, Pin selectedPin) {
+		int valorDadoDepois;
 
-							return true;
-						}
-						if(Ludo.pins.getList().get(j).getPlayer() == 2) {
-							Ludo.pins.getList().get(j).setX(L_BASE + 2 * L_CASA);
-							Ludo.pins.getList().get(j).setY(L_CASA);
-							return true;
-						} 
-						if(Ludo.pins.getList().get(j).getPlayer() == 3) {
-							Ludo.pins.getList().get(j).setX(L_TAB - 2 * L_CASA);
-							Ludo.pins.getList().get(j).setY(L_BASE + 2 * L_CASA);
-							return true;
-						}
-						if(Ludo.pins.getList().get(j).getPlayer() == 4) {
-							Ludo.pins.getList().get(j).setX(L_BASE);
-							Ludo.pins.getList().get(j).setY(L_TAB - 2 * L_CASA);
-							return true;
+		if(valorDado + casaInicial > 52){
+			valorDadoDepois = (valorDado + casaInicial) - 52;			
+
+			//abrigo
+			for(int i = casaInicial + 1; i < 51; i++){
+				if(casas.get(i).getIsBlack() == true){
+					for(int j = 0; j < 16; j++){
+						if(Ludo.pinos.get(j).getCasaInicial() == casas.get(i).getId() && Ludo.pinos.get(j).getCor() != selectedPin.cor){
+							return false;
 						}
 					}
-					
+
+				}
+			}
+			
+			//captura antes da virada da lista
+			for(int i = casaInicial + 1; i < 51; i++) {
+				for(int j = 0; j < 16; j++) {
+					if(casas.get(i).getId() == Ludo.pins.getList().get(j).getCasaInicial()) {
+						if(Ludo.pins.getList().get(j).getPlayer() != selectedPin.player) {
+							if(Ludo.pins.getList().get(j).getPlayer() == 1) {
+								Ludo.pins.getList().get(j).setX(L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(0).setQtdPin(casas.get(0).getQtdPin() + 1);
+
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 2) {
+								Ludo.pins.getList().get(j).setX(L_BASE + 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(14).setQtdPin(casas.get(14).getQtdPin() + 1);
+								
+								return true;
+							} 
+							if(Ludo.pins.getList().get(j).getPlayer() == 4) {
+								Ludo.pins.getList().get(j).setX(L_TAB - 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE + 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(27).setQtdPin(casas.get(27).getQtdPin() + 1);
+								
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 3) {
+								Ludo.pins.getList().get(j).setX(L_BASE);
+								Ludo.pins.getList().get(j).setY(L_TAB - 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(40).setQtdPin(casas.get(40).getQtdPin() + 1);
+								return true;
+							}
+						}
+
+					}
+				}
+			}
+			
+			//captura depois da virada da lista
+			for(int i = 0; i < valorDadoDepois - 1; i++) {
+				for(int j = 0; j < 16; j++) {
+					if(casas.get(i).getId() == Ludo.pins.getList().get(j).getCasaInicial()) {
+						if(Ludo.pins.getList().get(j).getPlayer() != selectedPin.player) {
+							if(Ludo.pins.getList().get(j).getPlayer() == 1) {
+								Ludo.pins.getList().get(j).setX(L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(0).setQtdPin(casas.get(0).getQtdPin() + 1);
+
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 2) {
+								Ludo.pins.getList().get(j).setX(L_BASE + 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(14).setQtdPin(casas.get(14).getQtdPin() + 1);
+								
+								return true;
+							} 
+							if(Ludo.pins.getList().get(j).getPlayer() == 4) {
+								Ludo.pins.getList().get(j).setX(L_TAB - 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE + 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(27).setQtdPin(casas.get(27).getQtdPin() + 1);
+								
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 3) {
+								Ludo.pins.getList().get(j).setX(L_BASE);
+								Ludo.pins.getList().get(j).setY(L_TAB - 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(40).setQtdPin(casas.get(40).getQtdPin() + 1);
+								
+								return true;
+							}
+						}
+
+					}
+				}
+			}
+			
+			
+		}
+
+		else{
+			//abrigo
+			for(int i = casaInicial + 1; i < valorDado + casaInicial - 1; i++){
+				if(casas.get(i).getIsBlack() == true){
+					for(int j = 0; j < 16; j++){
+						if(Ludo.pinos.get(j).getCasaInicial() == casas.get(i).getId() && Ludo.pinos.get(j).getCor() != selectedPin.cor){
+							return false;
+						}
+					}
+
+				}
+			}
+
+			for(int i = casaInicial + 1; i < valorDado + casaInicial; i++) {
+				for(int j = 0; j < 16; j++) {
+					if(casas.get(i).getId() == Ludo.pins.getList().get(j).getCasaInicial()) {
+						if(Ludo.pins.getList().get(j).getPlayer() != selectedPin.player) {
+							if(Ludo.pins.getList().get(j).getPlayer() == 1) {
+								Ludo.pins.getList().get(j).setX(L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(0).setQtdPin(casas.get(0).getQtdPin() + 1);
+
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 2) {
+								Ludo.pins.getList().get(j).setX(L_BASE + 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(14).setQtdPin(casas.get(14).getQtdPin() + 1);
+								
+								return true;
+							} 
+							if(Ludo.pins.getList().get(j).getPlayer() == 4) {
+								Ludo.pins.getList().get(j).setX(L_TAB - 2 * L_CASA);
+								Ludo.pins.getList().get(j).setY(L_BASE + 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(27).setQtdPin(casas.get(27).getQtdPin() + 1);
+								
+								return true;
+							}
+							if(Ludo.pins.getList().get(j).getPlayer() == 3) {
+								Ludo.pins.getList().get(j).setX(L_BASE);
+								Ludo.pins.getList().get(j).setY(L_TAB - 2 * L_CASA);
+								casas.get(i).setQtdPin(casas.get(i).getQtdPin() - 1);
+								casas.get(40).setQtdPin(casas.get(40).getQtdPin() + 1);
+								
+								return true;
+							}
+						}
+
+					}
 				}
 			}
 		}
@@ -357,7 +506,5 @@ public class Pin{
 	public void setCor(int cor) {
 		this.cor = cor;
 	}
-
-
 
 }

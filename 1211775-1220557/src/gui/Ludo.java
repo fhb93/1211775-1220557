@@ -33,13 +33,11 @@ public class Ludo  {
 	public static boolean[] playerTurnHasFinished;
 
 
-
 	public static void main(String[] args) {
 
 		final int frameWidth = 1024;
 		final int frameHeight = 762;
-		
-		//Thread turnBounce = new Thread();
+
 		int player = 1;
 		JButton buttonTurn = new JButton("Iniciar!"); 
 		JFrame myFrame = new JFrame("Ludo");
@@ -67,33 +65,24 @@ public class Ludo  {
 		myFrame.setVisible(true);
 
 		turn(buttonTurn, d.getButton(), player );
-		//		if() {
-		//			buttonTurn.setText("Finalizar Turno");
-		//			panel.add(buttonTurn);
-		//			myFrame.add(panel);
-		//			myFrame.setVisible(true);
-		//		}
+
 		for(int i = 0; i < 4; i++)
 			playerTurnHasFinished[i] = false;
-		
+
 		while(true) {
-			
+
 			if(turn) {
-				
+
 				turn = false;
 
 				if(player == 1 &&  !playerTurnHasFinished[player - 1]) //amarelo  
 					movements(d, d.getButton(), panel, player); 
-					//movements(d, d.getButton(), panel, pins.getList().get(0), player);
 				if(player == 2 && !playerTurnHasFinished[player - 1])	 //azul 
 					movements(d, d.getButton(), panel, player);
-					//movements(d, d.getButton(), panel, pins.getList().get(4), player);
 				if(player == 3 &&  !playerTurnHasFinished[player - 1]) //vermelhas
 					movements(d, d.getButton(), panel, player);
-				//	movements(d, d.getButton(), panel, pins.getList().get(12), player);
 				if(player == 4 && !playerTurnHasFinished[player - 1]) //verdes
 					movements(d, d.getButton(), panel, player);
-				//	movements(d, d.getButton(), panel, pins.getList().get(8), player);
 				switch(player) {
 				case 1:
 					board.setText("Jogador: Amarelas");
@@ -108,27 +97,26 @@ public class Ludo  {
 					board.setText("Jogador: Verdes");
 					break;
 				}
-				
-				
+
+
 				player++;
-				
+
 				if(player == 5)
 					player = 1;
 				for(int i = 0; i < 4; i++)
 					playerTurnHasFinished[i] = false; //reseta os jogadas da rodada ao seu término
-			
-				
+
+
 			}
 
 			try {
 				Thread.sleep(500);
 				turn(buttonTurn, d.getButton(), player );
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			panel.repaint();
-			
+
 		}
 	}
 
@@ -143,61 +131,113 @@ public class Ludo  {
 			public void handleMouseClick(MouseEvent event) {
 				if(diceClicked == false){
 					d.setValorDado(d.rollDice());
-					/// FRONTEIRA
 					if(d.getValorDado() == 5) {
 						System.out.println("Movendo novo pino");
 					}
-					
-					/// FRONTEIRA
 					diceClicked = true;
 				}
 			}
 		});
-		
+
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				super.mouseClicked(event);
-				if(!played && !playerTurnHasFinished[player - 1]) {
-					if(player == 1){
-//			REMOVER			System.out.println(event.getPoint().toString());
-						for(int i = 0; i < 4; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint()))
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+				int yellowPinsOnPath = 1; 
+				int bluePinsOnPath = 5;
+				int redPinsOnPath = 9;
+				int greenPinsOnPath = 13;
+
+				if(d.getValorDado() != 5) {
+					if(!played && !playerTurnHasFinished[player - 1]) {
+						if(player == 1){
+							for(int i = 0; i < yellowPinsOnPath; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint())) {
+									d.setValorDado(checkDice(d.getValorDado(), pins, player));
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+
+								}
+							}
+						}
+						else if(player == 2){
+							for(int i = 4; i < bluePinsOnPath; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint())) {// tava amarelas em vez de azuis
+									d.setValorDado(checkDice(d.getValorDado(), pins, player));							
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, azuis, player); //pin.getValorDado
+								}
+							}
+						}
+						else if(player == 3){
+							for(int i = 8; i < redPinsOnPath; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint()))  {// tava amarelas em vez de verdes
+									d.setValorDado(checkDice(d.getValorDado(), pins, player));
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, verdes, player); //pin.getValorDado
+								}
+							}
+						}
+
+						else if(player == 4){
+							for(int i = 12; i < greenPinsOnPath; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint())) { // tava amarela em vez de vermelhas
+									d.setValorDado(checkDice(d.getValorDado(), pins, player));
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, vermelhas, player); //pin.getValorDado
+								}
+							}
 						}
 					}
-					else if(player == 2){
-					//	pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, azuis, player);
-						for(int i = 4; i < 8; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint()))// tava amarelas em vez de azuis
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, azuis, player); //pin.getValorDado
+				}
+
+				else if(d.getValorDado() == 5) {
+					if(!played && !playerTurnHasFinished[player - 1]) {
+						if(player == 1){
+							for(int i = 0; i < 4; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint()))
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, amarelas, player); //pin.getValorDado
+								if(!pins.getList().get(i).isOnPath) {
+									yellowPinsOnPath++;
+								}
+							}
+
 						}
-					}
-					else if(player == 3){
-						//pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, vermelhas, player);
-						for(int i = 12; i < 16; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarela em vez de vermelhas
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, vermelhas, player); //pin.getValorDado
+						else if(player == 2){
+							for(int i = 4; i < 8; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint()))// tava amarelas em vez de azuis
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, azuis, player); //pin.getValorDado
+								if(!pins.getList().get(i).isOnPath) {
+									bluePinsOnPath++;
+								}
+							}
 						}
-					}
-					else if(player == 4){
-					//	pin.handleSelectedPin(event, d.getValorDado(), d.getValorDado() + pin.getCasasAndadas(), casas, verdes, player);
-						for(int i = 8; i < 11; i++) {
-							if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarelas em vez de verdes
-								pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, verdes, player); //pin.getValorDado
+						else if(player == 3){
+							for(int i = 8; i < 12; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarelas em vez de verdes
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, vermelhas, player); //pin.getValorDado
+								if(!pins.getList().get(i).isOnPath) {
+									redPinsOnPath++;
+								}
+							}
 						}
-					}
-					
+
+						else if(player == 4){
+							for(int i = 12; i < 16; i++) {
+								if(pins.getList().get(i).pinSelected(event.getPoint())) // tava amarela em vez de vermelhas
+									pins.getList().get(i).handleSelectedPin(event, d.getValorDado(),d.getValorDado() + pins.getList().get(i).getCasasAndadas(), casas, verdes, player); //pin.getValorDado
+								if(!pins.getList().get(i).isOnPath) {
+									greenPinsOnPath++;
+								}
+
+							}
+						}
+
+					}				
 					if(!Pin.captured) 
 						playerTurnHasFinished[player - 1] = true;
-					else 
-						d.setValorDado(20);
-				}				
-				panel.repaint();
+					panel.repaint();			
+				}
 			}
 		});
 	}
-	static void turn (JButton buttonTurn, JButton dadoButton, int cor) {
+	public static void turn (JButton buttonTurn, JButton dadoButton, int cor) {
 
 		buttonTurn.addMouseListener(new MouseAdapter() {
 			@Override
@@ -231,4 +271,43 @@ public class Ludo  {
 		});
 	}
 
+	public static int checkDice(int valorDado, PinList pins, int player) {
+		if(valorDado == 6) {
+			if(player == 1) {
+				for(int i = 0; i < 4; i++) {
+					if(!pins.getList().get(i).isOnPath) {
+						return valorDado;
+					}
+				}
+				return 7;
+			}
+			if(player == 2) {
+				for(int i = 4; i < 8; i++) {
+					if(!pins.getList().get(i).isOnPath) {
+						return valorDado;
+					}
+
+				}
+				return 7;
+			}
+			if(player == 3) {
+				for(int i = 8; i < 12; i++) {
+					if(!pins.getList().get(i).isOnPath) {
+						return valorDado;
+					}
+
+				}
+				return 7;
+			}
+			if(player == 4) {
+				for(int i = 12; i < 16; i++) {
+					if(!pins.getList().get(i).isOnPath) {
+						return valorDado;
+					}
+				}
+				return 7;
+			}
+		}
+		return valorDado;
+	}
 }

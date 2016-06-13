@@ -29,7 +29,7 @@ public class Panel extends JPanel {
 		for(int i = 0; i < 16; i++)
 		{
 			g2d.setColor(Color.BLACK);
-			g2d.setStroke(new BasicStroke(3));
+			g2d.setStroke(new BasicStroke(6));
 
 			g2d.drawOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 		}
@@ -44,16 +44,17 @@ public class Panel extends JPanel {
 				g2d.fillOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 			}
 			else if(i < 12){
-				g2d.setColor(new Color(0, 153, 0));
+				g2d.setColor(Color.RED);
 				g2d.fillOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 			}
-			else{
-				g2d.setColor(Color.RED);
+			else {
+				g2d.setColor(new Color(0, 153, 0));
 				g2d.fillOval(Ludo.pinos.get(i).getX(), Ludo.pinos.get(i).getY(), 40, 40);
 			}
 		}
 
-		//verifica se há casa com dois pinos da mesma cor e desenha um quadrado de sua cor se houver
+		
+		//verifica se hÃ¡ casa com dois pinos da mesma cor e desenha um quadrado de sua cor se houver
 		for(int i = 0; i < Ludo.casas.size(); i++){
 			if(Ludo.casas.get(i).getQtdPin() == 2){
 				x = Ludo.casas.get(i).getX();
@@ -61,18 +62,34 @@ public class Panel extends JPanel {
 				for(int j = 0; j < Ludo.pinos.size(); j++){
 					if(Ludo.pinos.get(j).getX() == Ludo.casas.get(i).getX() && Ludo.pinos.get(j).getY() == Ludo.casas.get(i).getY()){
 						if(Ludo.pinos.get(j).getPlayer() == 1){
+							g2d.setColor(Color.BLACK);
+							g2d.setStroke(new BasicStroke(4));
+							g2d.drawRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 							g2d.setColor(Color.YELLOW);
+							g2d.fillRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 						}
 						else if(Ludo.pinos.get(j).getPlayer() == 2){
+							g2d.setColor(Color.BLACK);
+							g2d.setStroke(new BasicStroke(4));
+							g2d.drawRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 							g2d.setColor(Color.BLUE);
+							g2d.fillRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 						}
 						else if(Ludo.pinos.get(j).getPlayer() == 3){
+							g2d.setColor(Color.BLACK);
+							g2d.setStroke(new BasicStroke(4));
+							g2d.drawRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 							g2d.setColor(new Color(0, 153, 0));
+							g2d.fillRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 						}
 						else{
+							g2d.setColor(Color.BLACK);
+							g2d.setStroke(new BasicStroke(4));
+							g2d.drawRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 							g2d.setColor(Color.RED);
+							g2d.fillRect(x + L_CASA/2, y + L_CASA/2, L_CASA/3,L_CASA/3);
 						}
-						g2d.drawRect(x, y, L_CASA/2, L_CASA/2);
+						
 					}
 				}
 			}

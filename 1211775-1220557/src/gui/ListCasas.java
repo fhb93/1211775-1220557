@@ -110,6 +110,9 @@ public class ListCasas {
 		casas.add(new Casa(x , y, id));
 		id++;
 		
+		//limbo
+		casas.add(new Casa(1500, 1500, id));
+		
 		System.out.println(id == QUANT_CASAS - 6);
 		System.out.println(id);
 		
@@ -117,6 +120,12 @@ public class ListCasas {
 		casas.get(14).setQtdPin(1);
 		casas.get(27).setQtdPin(1);
 		casas.get(40).setQtdPin(1);
+		
+		
+		casas.get(10).setIsBlack(true);
+		casas.get(23).setIsBlack(true);
+		casas.get(36).setIsBlack(true);
+		casas.get(49).setIsBlack(true);
 	}
 	
 	public ListCasas(int cor){
