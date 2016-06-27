@@ -1,4 +1,4 @@
-package gui;
+package logic;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -62,18 +62,16 @@ public class Dado {
 
 
 	public int rollDice() {
-		System.out.println("The Dice are Rolling!");
 		Random rand = new Random();
 		int val = 0;
 		for(int i = 0; i < 10; i++) {
 
 			try {
+				
 				val = rand.nextInt(6);
-				val = rand.nextInt(6); // para aumentar o randomismo
+				val = rand.nextInt(6);
 				img = ImageIO.read(file[val]);
 				label.setIcon(new ImageIcon(img));
-
-				
 				
 			} catch (Exception exc) {
 				exc.printStackTrace();

@@ -1,24 +1,30 @@
-package gui;
+package graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class Tabuleiro{
-
+	//Define o lados dos elementos do tabuleiro
+	final int L_TAB = 715;
+	final int L_BASE = 285;
+	final int L_CASA = (L_TAB - (2*L_BASE)) / 3;
+	final int L_CENTRO = L_CASA * 3;
+	final int D_PEAO = 40;
+	
+	private static Tabuleiro ctrl = null;
+	int x;
+	int y;
+	int npoints = 4;
+	int npoints_tri = 3;
+	
+	private Tabuleiro(){
+	}
+	
 	public void paintTabuleiro(Graphics g)
 	{
 
-		int x, y;
-		//Define o lados dos elementos do tabuleiro
-		final int L_TAB = 715;
-		final int L_BASE = 285;
-		final int L_CASA = (L_TAB - (2*L_BASE)) / 3;
-		final int L_CENTRO = L_CASA * 3;
-		final int D_PEAO = 40;
 
 
-		int npoints = 4;
-		int npoints_tri = 3;
 
 		Graphics2D g2d = (Graphics2D) g;
 		//Desenha as linhas exteriores do tabuleiro e as bases
@@ -184,5 +190,12 @@ public class Tabuleiro{
 		g2d.fillRect(L_BASE, L_CASA, L_CASA, L_CASA);
 		g2d.fillRect(L_TAB - 2*L_CASA, L_BASE, L_CASA, L_CASA);
 		g2d.fillRect(L_BASE + 2*L_CASA, L_TAB - 2*L_CASA, L_CASA, L_CASA);
+	}
+	
+	public static Tabuleiro getTabuleiro(){
+		if(ctrl == null){
+			ctrl = new Tabuleiro();
+		}
+		return ctrl;
 	}
 }

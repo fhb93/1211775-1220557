@@ -1,10 +1,9 @@
-package gui;
+package logic;
 
 import java.util.ArrayList;
 
-public class ListCasas {
+class ListCasas {
 	
-	public final int QUANT_CASAS = 59; 
 	private final int L_TAB = 715;
 	private final int L_BASE = 285;
 	private final int L_CASA = (L_TAB - (2*L_BASE)) / 3;
@@ -36,8 +35,6 @@ public class ListCasas {
 		casas.add(new Casa(x , y, id));
 		id++;
 		x += L_CASA;
-		casas.add(new Casa(x , y, id));
-		id++;
 		
 		
 		for(; y < L_BASE ; y += L_CASA){
@@ -110,22 +107,19 @@ public class ListCasas {
 		casas.add(new Casa(x , y, id));
 		id++;
 		
-		//limbo
+		//limbo, posicao inicial dos pinos das bases
 		casas.add(new Casa(1500, 1500, id));
-		
-		System.out.println(id == QUANT_CASAS - 6);
-		System.out.println(id);
-		
+				
 		casas.get(0).setQtdPin(1);
-		casas.get(14).setQtdPin(1);
-		casas.get(27).setQtdPin(1);
-		casas.get(40).setQtdPin(1);
+		casas.get(13).setQtdPin(1);
+		casas.get(26).setQtdPin(1);
+		casas.get(39).setQtdPin(1);
 		
 		
-		casas.get(10).setIsBlack(true);
-		casas.get(23).setIsBlack(true);
-		casas.get(36).setIsBlack(true);
-		casas.get(49).setIsBlack(true);
+		casas.get(9).setIsBlack(true);
+		casas.get(22).setIsBlack(true);
+		casas.get(35).setIsBlack(true);
+		casas.get(48).setIsBlack(true);
 	}
 	
 	public ListCasas(int cor){
@@ -145,6 +139,7 @@ public class ListCasas {
 				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
+			coloridas.add(new Casa(x, y, id));
 		}
 		//azul
 		else if(cor == 2){
@@ -161,25 +156,10 @@ public class ListCasas {
 				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
-		}
-	    //verde
-		else if(cor == 3){
-		
-			int x = L_BASE;
-			int y = L_TAB - 2*L_CASA;
-		
 			coloridas.add(new Casa(x, y, id));
-			id++;
-			
-			x += L_CASA;
-			
-			for(; y > L_TAB - L_BASE; y -= L_CASA){
-				coloridas.add(new Casa(x , y, id));
-				id++;
-			}
 		}
 		//vermelho
-		else if(cor == 4){
+		else if(cor == 3){
 			
 			int x = L_TAB - 2*L_CASA;
 			int y = L_BASE + 2*L_CASA;
@@ -193,6 +173,24 @@ public class ListCasas {
 				coloridas.add(new Casa(x , y, id));
 				id++;
 			}
+			coloridas.add(new Casa(x, y, id));
+		}
+	    //verde
+		else if(cor == 4){
+		
+			int x = L_BASE;
+			int y = L_TAB - 2*L_CASA;
+		
+			coloridas.add(new Casa(x, y, id));
+			id++;
+			
+			x += L_CASA;
+			
+			for(; y > L_TAB - L_BASE; y -= L_CASA){
+				coloridas.add(new Casa(x , y, id));
+				id++;
+			}
+			coloridas.add(new Casa(x, y, id));
 		}
 	}
 	

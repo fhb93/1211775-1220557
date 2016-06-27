@@ -1,4 +1,4 @@
-package gui;
+package logic;
 
 public class Casa {
 	private int qtdPin;
